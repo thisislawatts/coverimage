@@ -9,6 +9,6 @@ Will take an element and find an image within then size to essentially replicate
  </div>
 ```
 
-# Contributing
+## Contributing
 
 Please do.
