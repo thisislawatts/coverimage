@@ -54,8 +54,7 @@
 			'top': ( _this.$el.outerHeight() - dimensions.height) * 0.5,
 			'left': ( _this.$el.width() - dimensions.width) * 0.5,
 			'max-width': 'none',
-			'z-index': -1
-		}).data('resrc-width', dimensions.width);
+		}).data('resrc-width', dimensions.width).addClass('ci--sized');
 
 		_this.cb();
 	};
