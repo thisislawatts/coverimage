@@ -1,22 +1,3 @@
-/////////////////////
-//
-// Cover Dimensions
-//  
-/////////////////////
-
-/**
- * Will take an element and find an image within then size
- * to essentially replicate CSS behaviour of background-size: cover
-
-```
- <div data-cover-image>
-   <img src="http://example.com"/>
- </div>
-```
-
- * @param  {DOMelement} el
- * @return
- */
 (function(window, $) {
 	'use strict';
 
@@ -61,7 +42,7 @@
 
 	CoverImage.prototype.resizeImage = function() {
 		var _this = this,
-			dimensions = _this.containDimensions( _this.imageWidth, _this.imageHeight, _this.$el.width(), _this.$el.outerHeight() );
+			dimensions = _this.coverDimensions( _this.imageWidth, _this.imageHeight, _this.$el.width(), _this.$el.outerHeight() );
 
 		_this.$img.attr({
 			'width'  : dimensions.width,
