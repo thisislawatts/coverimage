@@ -5,8 +5,8 @@
 	
 		var _this = this;
 
-			_this.$img = $el.find('img');
 			_this.$el = $el ? jQuery($el) : jQuery(window);
+			_this.$img = _this.getElementForSizing();
 			_this.disableOnMobile = _this.$el.data('cover-image-mobile') === false;
 			_this.cb = cb || function() {
 				//DEBUG console.log("Default callback");
@@ -35,18 +35,37 @@
 			_this.resizeImage();
 		})
 		
+		$(window).on('ci.resize', function() {
+			_this.resizeImage();
+		})
+
 		setInterval(function() {
 			_this.resizeImage();
 		}, 1000 );
+	};
+
+	CoverImage.prototype.getElementForSizing = function() {
+		var _this = this,
+			selector = _this.$el.data('coverImageEl');
+
+		if ( selector )  {
+			console.log("Element selector Present", _this.$el.find( selector ) );
+
+			return _this.$el.find( selector ) ? _this.$el.find( selector ) : _this.$el.find('img');
+		}
+
+		return _this.$el.find('img');
 	};
 
 	CoverImage.prototype.resizeImage = function() {
 		var _this = this,
 			dimensions = _this.coverDimensions( _this.imageWidth, _this.imageHeight, _this.$el.width(), _this.$el.outerHeight() );
 
+		// console.log('Resize images:', _this.imageWidth, _this.imageHeight, _this.$el.width(), _this.$el.outerHeight() );
+
 		_this.$img.attr({
-			'width'  : dimensions.width,
-			'height' : dimensions.height
+			'width'  : dimensions.width + 2,
+			'height' : dimensions.height + 2
 		}).css({
 			'position': 'absolute',
 			'width': dimensions.width + 1,
@@ -68,7 +87,6 @@
 		};
 	};
 
-
 	CoverImage.prototype.containDimensions = function ( child_w, child_h, container_w, container_h ) {
 		var scale_factor = this.min( container_w / child_w, container_h / child_h );
 
@@ -89,4 +107,6 @@
 	jQuery('[data-cover-image]').each(function() {
 		 new CoverImage( jQuery(this) );
 	});
+
+
 }(window, jQuery));
