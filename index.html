@@ -6,21 +6,51 @@
 
 	<title>jQuery Cover Image</title>
 	<style>
-		div {
-			position: absolute;
+		html, body {
+			font-family: sans-serif;
+			min-height: 500vh;
+		}
+
+		#Example1 {
 			top: 0;
 			left: 0;
 			width: 100%;
-			height: 100%;
+			height: 50vh;
+		}
+
+		#Example2 {
+			width: 100%;
+			height: 18em;
+			outline: 1px solid red;
+		}
+
+		#Example3 {
+			margin-top: 1.5em;
+			width: 50%;
+			height: 18em;
+			outline: 1px solid red;
 		}
 	</style>
 </head>
 <body>
-	<div data-cover-image>
+
+	<h1>Cover Image</h1>
+
+	<div id="Example1" data-cover-image>
 		<img src="https://placeholdit.imgix.net/~text?txtsize=56&txt=600%C3%97400&w=600&h=400" alt=""/>
 	</div>
 
-	
+	<p>If the image overflows the container then the image can be animated.</p>
+
+	<div id="Example2" data-cover-image data-cover-image-parallax>
+		<img src="https://placeholdit.imgix.net/~text?txtsize=56&txt=600%C3%97400&w=600&h=400" alt=""/>
+	</div>
+
+	<div id="Example3" data-cover-image data-cover-image-parallax>
+		<img src="https://placeholdit.imgix.net/~text?txtsize=56&txt=1200%C3%97400&w=1200&h=400" alt=""/>
+	</div>
+
+
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="jquery.coverimage.js"></script>
 </body>

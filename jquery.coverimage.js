@@ -11,16 +11,30 @@
 			_this.cb = cb || function() {
 				//DEBUG console.log("Default callback");
 			};
+			_this.positioning = {
+				x : 0.5,
+				y : 0.5
+			};
+
+		_this.options = {
+			parallax : jQuery($el).data('coverImageParallax') === ''
+		};
 
 		if ( _this.disableOnMobile && window.innerWidth < 480 ) {
 			return;
 		}
+
+		_this.elementDimensions = {
+			height : _this.$el.outerHeight(),
+			width  : _this.$el.outerWidth()
+		};
 
 		_this.imageWidth = _this.$img.attr('width') || _this.$img.width();
 		_this.imageHeight = _this.$img.attr('height') || _this.$img.height();
 
 		_this.$el.css({
 			'overflow' : 'hidden',
+			'position' : 'relative'
 		});
 
 		if (!_this.$img.length) {
@@ -41,6 +55,42 @@
 		setInterval(function() {
 			_this.resizeImage();
 		}, 1000 );
+
+		if (_this.options.parallax) {
+			_this.draw();
+		}
+	};
+
+	/**
+	 * Parallax FX
+	 * 
+	 */
+	CoverImage.prototype.draw = function() {
+		var _this = this,
+			friction = 0.5,
+			imageOffsetX = document.body.scrollTop * friction,
+			imageOffsetY = document.body.scrollTop * friction,
+			maximumMovementY = ( _this.imageDimensions.height - _this.elementDimensions.height) * _this.positioning.y,
+			maximumMovementX = ( _this.imageDimensions.width - _this.elementDimensions.width) * _this.positioning.x;
+
+		console.log('x:', maximumMovementX);
+
+		if ( maximumMovementX > 0 ) {
+			console.log(imageOffsetX , maximumMovementX)
+			if (imageOffsetX < maximumMovementX ) {
+				console.log('New position:', maximumMovementX - imageOffsetX);
+				 _this.$img.css('transform', 'translateX(' + (maximumMovementX - imageOffsetX) + 'px)');
+			}
+		} else {
+			if ( imageOffsetY < maximumMovementY )
+				_this.$img.css('transform', 'translateY(' + (maximumMovementY - imageOffsetY) + 'px)');
+
+		}
+
+
+		window.requestAnimationFrame(function() {
+			_this.draw();
+		});
 	};
 
 	CoverImage.prototype.getElementForSizing = function() {
@@ -60,17 +110,17 @@
 		var _this = this,
 			dimensions = _this.coverDimensions( _this.imageWidth, _this.imageHeight, _this.$el.width(), _this.$el.outerHeight() );
 
-		// console.log('Resize images:', _this.imageWidth, _this.imageHeight, _this.$el.width(), _this.$el.outerHeight() );
+		_this.imageDimensions = dimensions;
 
 		_this.$img.attr({
-			'width'  : dimensions.width + 2,
-			'height' : dimensions.height + 2
+			'width'  : dimensions.width,
+			'height' : dimensions.height
 		}).css({
 			'position': 'absolute',
-			'width': dimensions.width + 1,
+			'width': dimensions.width,
 			'height': dimensions.height,
-			'top': ( _this.$el.outerHeight() - dimensions.height) * 0.5,
-			'left': ( _this.$el.width() - dimensions.width) * 0.5,
+			'top': ( _this.$el.outerHeight() - dimensions.height) * _this.positioning.x,
+			'left': ( _this.$el.width() - dimensions.width) * _this.positioning.y,
 			'max-width': 'none',
 		}).data('resrc-width', dimensions.width).addClass('ci--sized');
 

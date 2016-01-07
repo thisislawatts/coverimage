@@ -1,7 +1,7 @@
 
 # jQuery - Cover Dimensions
 
-Will take an element and find an image within then size to essentially replicate CSS behaviour of background-size: cover
+Will take an element and find an image within then size to replicate the behaviour of `background-size: cover` from CSS. The advantage of this method is that you get all the semantics/accessibility of an image.
 
 ```
  <div data-cover-image>
