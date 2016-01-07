@@ -21,7 +21,6 @@
 
 		_this.$el.css({
 			'overflow' : 'hidden',
-			'position' : 'relative'
 		});
 
 		if (!_this.$img.length) {
