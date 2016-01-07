@@ -1,0 +1,19 @@
+{
+  "name": "jquery.coverimage.js",
+  "version": "0.0.1",
+  "description": "Will take an element and find an image within then size to essentially replicate CSS behaviour of background-size: cover",
+  "main": "jquery.coverimage.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thisislawatts/jquery.coverimage.js.git"
+  },
+  "author": "Luke Watts",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thisislawatts/jquery.coverimage.js/issues"
+  },
+  "homepage": "https://github.com/thisislawatts/jquery.coverimage.js"
+}
