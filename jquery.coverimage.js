@@ -2,7 +2,7 @@
 	'use strict';
 
 	var CoverImage = function( $el, cb ) {
-	
+
 		var _this = this;
 
 			_this.$el = $el ? jQuery($el) : jQuery(window);
@@ -15,10 +15,31 @@
 				x : 0.5,
 				y : 0.5
 			};
+			_this.options = {
+				parallax : _this.$el.data('coverImageParallax') === ''
+			};
 
-		_this.options = {
-			parallax : jQuery($el).data('coverImageParallax') === ''
-		};
+		if (!_this.$img) {
+			console.log('Error:','no image found', _this.$img );
+			return;
+		}
+
+
+		_this.imageWidth = _this.$img.attr('width');
+		_this.imageHeight = _this.$img.attr('height');
+
+
+		// If the image doesn't have harcoded width|height
+		// attributes then load the image to calculate
+		// the dimensions
+		if (!_this.imageWidth || !_this.imageHeight) {
+			console.log('No dimensions found. Generating image')
+			_this.img = new Image();
+			_this.img.src = _this.$img.attr('src');
+
+			_this.imageWidth = _this.img.width;
+			_this.imageHeight = _this.img.height;
+		}
 
 		if ( _this.disableOnMobile && window.innerWidth < 480 ) {
 			return;
@@ -29,32 +50,35 @@
 			width  : _this.$el.outerWidth()
 		};
 
-		_this.imageWidth = _this.$img.attr('width') || _this.$img.width();
-		_this.imageHeight = _this.$img.attr('height') || _this.$img.height();
 
 		_this.$el.css({
-			'overflow' : 'hidden',
-			'position' : 'relative'
+			overflow : 'hidden',
+			position : 'relative'
 		});
 
 		if (!_this.$img.length) {
+
 			// TODO: Implement load
-			setTimeout( function() { new CoverImage( _this.$el ); }, 1000);
+			setTimeout( function() {
+				new CoverImage( _this.$el );
+			}, 1000);
+
 		} else {
 			_this.resizeImage();
 		}
 
+		_this.$img.one('load', function() {
+			console.log('Image loaded:', 'resize');
+			_this.resizeImage();
+		});
+
 		$(window).on('resize', function() {
 			_this.resizeImage();
-		})
-		
+		});
+
 		$(window).on('ci.resize', function() {
 			_this.resizeImage();
-		})
-
-		setInterval(function() {
-			_this.resizeImage();
-		}, 1000 );
+		});
 
 		if (_this.options.parallax) {
 			_this.draw();
@@ -63,7 +87,7 @@
 
 	/**
 	 * Parallax FX
-	 * 
+	 *
 	 */
 	CoverImage.prototype.draw = function() {
 		var _this = this,
@@ -76,17 +100,20 @@
 		console.log('x:', maximumMovementX);
 
 		if ( maximumMovementX > 0 ) {
+
 			console.log(imageOffsetX , maximumMovementX)
+
 			if (imageOffsetX < maximumMovementX ) {
 				console.log('New position:', maximumMovementX - imageOffsetX);
 				 _this.$img.css('transform', 'translateX(' + (maximumMovementX - imageOffsetX) + 'px)');
 			}
+
 		} else {
+
 			if ( imageOffsetY < maximumMovementY )
 				_this.$img.css('transform', 'translateY(' + (maximumMovementY - imageOffsetY) + 'px)');
 
 		}
-
 
 		window.requestAnimationFrame(function() {
 			_this.draw();
@@ -98,33 +125,56 @@
 			selector = _this.$el.data('coverImageEl');
 
 		if ( selector )  {
-			console.log("Element selector Present", _this.$el.find( selector ) );
+
+			console.log( 'Element selector Present', _this.$el.find( selector ) );
 
 			return _this.$el.find( selector ) ? _this.$el.find( selector ) : _this.$el.find('img');
 		}
 
-		return _this.$el.find('img');
+		return _this.$el.find('img').first();
 	};
 
 	CoverImage.prototype.resizeImage = function() {
 		var _this = this,
-			dimensions = _this.coverDimensions( _this.imageWidth, _this.imageHeight, _this.$el.width(), _this.$el.outerHeight() );
+			dimensions = _this.coverDimensions( _this.imageWidth, _this.imageHeight, _this.$el.outerWidth(), _this.$el.outerHeight() );
 
 		_this.imageDimensions = dimensions;
 
+
+		if ( isNaN( dimensions.width ) ) {
+			console.log('Failed to calculate image sizes.');
+		}
+
+		_this.setImageSize();
+	};
+
+	CoverImage.prototype.setImageSize = function() {
+
+		var _this = this;
+
 		_this.$img.attr({
-			'width'  : dimensions.width,
-			'height' : dimensions.height
+			'width'		: _this.imageDimensions.width,
+			'height'	: _this.imageDimensions.height
 		}).css({
-			'position': 'absolute',
-			'width': dimensions.width,
-			'height': dimensions.height,
-			'top': ( _this.$el.outerHeight() - dimensions.height) * _this.positioning.x,
-			'left': ( _this.$el.width() - dimensions.width) * _this.positioning.y,
-			'max-width': 'none',
-		}).data('resrc-width', dimensions.width).addClass('ci--sized');
+			'position'	: 'absolute',
+			'width'		: _this.imageDimensions.width,
+			'height'	: _this.imageDimensions.height,
+			// 'top'		: ( _this.$el.outerHeight() - _this.imageDimensions.height) * _this.positioning.x,
+			// 'left'		: ( _this.$el.width() - _this.imageDimensions.width) * _this.positioning.y,
+			'transform'		: _this.getTransform(
+				( _this.$el.width() - _this.imageDimensions.width) * _this.positioning.y,
+				( _this.$el.outerHeight() - _this.imageDimensions.height) * _this.positioning.x
+			),
+			'max-width'	: 'none'
+		}).data('resrc-width', _this.imageDimensions.width);
+
+		_this.$img.addClass('ci--sized');
 
 		_this.cb();
+	};
+
+	CoverImage.prototype.getTransform = function(x,y) {
+		return 'translate3d(' + x + 'px,' + y + 'px,0)';
 	};
 
 	CoverImage.prototype.coverDimensions = function ( child_w, child_h, container_w, container_h ) {
@@ -157,5 +207,6 @@
 		 new CoverImage( jQuery(this) );
 	});
 
+	window.CoverImage = CoverImage;
 
 }(window, jQuery));
