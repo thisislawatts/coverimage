@@ -1,16 +1,15 @@
-(function(window, $) {
-	'use strict';
+class CoverImage {
 
-	var CoverImage = function( $el, cb ) {
+	constructor($el, cb) {
 
-		var _this = this;
+		const _this = this;
 
 			_this.$el = $el ? jQuery($el) : jQuery(window);
 			_this.$img = _this.getElementForSizing();
 			_this.disableOnMobile = _this.$el.data('cover-image-mobile') === false;
-			_this.cb = cb || function() {
+			_this.cb = cb || (() => {
 				//DEBUG console.log("Default callback");
-			};
+			});
 			_this.positioning = {
 				x : 0.5,
 				y : 0.5
@@ -20,14 +19,12 @@
 			};
 
 		if (!_this.$img) {
-			console.log('Error:','no image found', _this.$img );
+			console.log('Error:', 'no image found', _this.$img );
 			return;
 		}
 
-
 		_this.imageWidth = _this.$img.attr('width');
 		_this.imageHeight = _this.$img.attr('height');
-
 
 		// If the image doesn't have harcoded width|height
 		// attributes then load the image to calculate
@@ -59,7 +56,7 @@
 		if (!_this.$img.length) {
 
 			// TODO: Implement load
-			setTimeout( function() {
+			setTimeout( () => {
 				new CoverImage( _this.$el );
 			}, 1000);
 
@@ -67,62 +64,58 @@
 			_this.resizeImage();
 		}
 
-		_this.$img.one('load', function() {
+		_this.$img.one('load', () => {
 			console.log('Image loaded:', 'resize');
 			_this.resizeImage();
 		});
 
-		$(window).on('resize', function() {
+		$(window).on('resize', () => {
 			_this.resizeImage();
 		});
 
-		$(window).on('ci.resize', function() {
+		$(window).on('ci.resize', () => {
 			_this.resizeImage();
 		});
 
 		if (_this.options.parallax) {
 			_this.draw();
 		}
-	};
+	}
 
 	/**
 	 * Parallax FX
 	 *
 	 */
-	CoverImage.prototype.draw = function() {
-		var _this = this,
-			friction = 0.5,
-			imageOffsetX = document.body.scrollTop * friction,
-			imageOffsetY = document.body.scrollTop * friction,
-			maximumMovementY = ( _this.imageDimensions.height - _this.elementDimensions.height) * _this.positioning.y,
-			maximumMovementX = ( _this.imageDimensions.width - _this.elementDimensions.width) * _this.positioning.x;
-
-		console.log('x:', maximumMovementX);
+	draw() {
+		const _this = this;
+		const friction = 0.5;
+		const imageOffsetX = document.body.scrollTop * friction;
+		const imageOffsetY = document.body.scrollTop * friction;
+		const maximumMovementY = ( _this.imageDimensions.height - _this.elementDimensions.height) * _this.positioning.y;
+		const maximumMovementX = ( _this.imageDimensions.width - _this.elementDimensions.width) * _this.positioning.x;
 
 		if ( maximumMovementX > 0 ) {
-
-			console.log(imageOffsetX , maximumMovementX)
-
 			if (imageOffsetX < maximumMovementX ) {
-				console.log('New position:', maximumMovementX - imageOffsetX);
-				 _this.$img.css('transform', 'translateX(' + (maximumMovementX - imageOffsetX) + 'px)');
+				// console.log('New position:', maximumMovementX - imageOffsetX);
+				_this.$img.css({
+					'transform': `translateX(${maximumMovementX - imageOffsetX}px)`
+				});
 			}
 
 		} else {
-
-			if ( imageOffsetY < maximumMovementY )
-				_this.$img.css('transform', 'translateY(' + (maximumMovementY - imageOffsetY) + 'px)');
-
+			if ( imageOffsetY < maximumMovementY ) {
+				_this.$img.css('transform', `translateY(${maximumMovementY - imageOffsetY}px)`);
+			}
 		}
 
-		window.requestAnimationFrame(function() {
+		window.requestAnimationFrame(() => {
 			_this.draw();
 		});
-	};
+	}
 
-	CoverImage.prototype.getElementForSizing = function() {
-		var _this = this,
-			selector = _this.$el.data('coverImageEl');
+	getElementForSizing() {
+		const _this = this;
+		const selector = _this.$el.data('coverImageEl');
 
 		if ( selector )  {
 
@@ -132,11 +125,11 @@
 		}
 
 		return _this.$el.find('img').first();
-	};
+	}
 
-	CoverImage.prototype.resizeImage = function() {
-		var _this = this,
-			dimensions = _this.coverDimensions( _this.imageWidth, _this.imageHeight, _this.$el.outerWidth(), _this.$el.outerHeight() );
+	resizeImage() {
+		const _this = this;
+		const dimensions = _this.coverDimensions( _this.imageWidth, _this.imageHeight, _this.$el.outerWidth(), _this.$el.outerHeight() );
 
 		_this.imageDimensions = dimensions;
 
@@ -146,11 +139,10 @@
 		}
 
 		_this.setImageSize();
-	};
+	}
 
-	CoverImage.prototype.setImageSize = function() {
-
-		var _this = this;
+	setImageSize() {
+		const _this = this;
 
 		_this.$img.attr({
 			'width'		: _this.imageDimensions.width,
@@ -159,8 +151,6 @@
 			'position'	: 'absolute',
 			'width'		: _this.imageDimensions.width,
 			'height'	: _this.imageDimensions.height,
-			// 'top'		: ( _this.$el.outerHeight() - _this.imageDimensions.height) * _this.positioning.x,
-			// 'left'		: ( _this.$el.width() - _this.imageDimensions.width) * _this.positioning.y,
 			'transform'		: _this.getTransform(
 				( _this.$el.width() - _this.imageDimensions.width) * _this.positioning.y,
 				( _this.$el.outerHeight() - _this.imageDimensions.height) * _this.positioning.x
@@ -171,42 +161,41 @@
 		_this.$img.addClass('ci--sized');
 
 		_this.cb();
-	};
+	}
 
-	CoverImage.prototype.getTransform = function(x,y) {
-		return 'translate3d(' + x + 'px,' + y + 'px,0)';
-	};
+	getTransform(x, y) {
+		return `translate3d(${x}px,${y}px,0)`;
+	}
 
-	CoverImage.prototype.coverDimensions = function ( child_w, child_h, container_w, container_h ) {
-		var scale_factor = this.max( container_w / child_w, container_h / child_h );
+	coverDimensions(child_w, child_h, container_w, container_h) {
+		const scale_factor = this.max( container_w / child_w, container_h / child_h );
 
 		return {
 			width: Math.ceil(child_w * scale_factor),
 			height: Math.ceil(child_h * scale_factor)
 		};
-	};
+	}
 
-	CoverImage.prototype.containDimensions = function ( child_w, child_h, container_w, container_h ) {
-		var scale_factor = this.min( container_w / child_w, container_h / child_h );
+	containDimensions(child_w, child_h, container_w, container_h) {
+		const scale_factor = this.min( container_w / child_w, container_h / child_h );
 
 		return {
 			width: child_w * scale_factor,
 			height: child_h * scale_factor
 		};
-	};
+	}
 
-	CoverImage.prototype.min = function( a, b ) {
+	min(a, b) {
 		return a > b ? b : a;
-	};
+	}
 
-	CoverImage.prototype.max = function( a, b) {
+	max(a, b) {
 		return a > b ? a : b;
-	};
+	}
+}
 
-	jQuery('[data-cover-image]').each(function() {
-		 new CoverImage( jQuery(this) );
-	});
+const elems = document.body.querySelectorAll('[data-cover-image]');
 
-	window.CoverImage = CoverImage;
-
-}(window, jQuery));
+elems.forEach(el => {
+	new CoverImage( jQuery(el) );
+});
