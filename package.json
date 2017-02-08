@@ -1,19 +1,24 @@
 {
-  "name": "jquery.coverimage.js",
+  "name": "coverimage",
   "version": "0.0.1",
   "description": "Will take an element and find an image within then size to essentially replicate CSS behaviour of background-size: cover",
-  "main": "jquery.coverimage.js",
+  "main": "src/coverimage.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel ./src -d ./dist"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/thisislawatts/jquery.coverimage.js.git"
+    "url": "https://github.com/thisislawatts/coverimage.git"
   },
   "author": "Luke Watts",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/thisislawatts/jquery.coverimage.js/issues"
+    "url": "https://github.com/thisislawatts/coverimage/issues"
   },
-  "homepage": "https://github.com/thisislawatts/jquery.coverimage.js"
+  "homepage": "https://github.com/thisislawatts/coverimage",
+  "devDependencies": {
+    "babel-cli": "^6.22.2",
+    "babel-preset-env": "^1.1.8"
+  }
 }
