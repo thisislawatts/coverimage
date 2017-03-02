@@ -1,22 +1,22 @@
 class CoverImage {
 
 	constructor($el, cb) {
-
 		const _this = this;
 
-			_this.$el = $el ? jQuery($el) : jQuery(window);
-			_this.$img = _this.getElementForSizing();
-			_this.disableOnMobile = _this.$el.data('cover-image-mobile') === false;
-			_this.cb = cb || (() => {
-				//DEBUG console.log("Default callback");
-			});
-			_this.positioning = {
-				x : 0.5,
-				y : 0.5
-			};
-			_this.options = {
-				parallax : _this.$el.data('coverImageParallax') === ''
-			};
+		_this.$el = $el ? jQuery($el) : jQuery(window);
+		_this.$img = _this.getElementForSizing();
+		_this.disableOnMobile = _this.$el.data('cover-image-mobile') === false;
+		_this.cb = cb || (() => {
+			//DEBUG console.log("Default callback");
+		});
+
+		_this.positioning = {
+			x : 0.5,
+			y : 0.5
+		};
+		_this.options = {
+			parallax : _this.$el.data('coverImageParallax') === ''
+		};
 
 		if (!_this.$img) {
 			console.log('Error:', 'no image found', _this.$img );
@@ -47,14 +47,12 @@ class CoverImage {
 			width  : _this.$el.outerWidth()
 		};
 
-
 		_this.$el.css({
 			overflow : 'hidden',
 			position : 'relative'
 		});
 
 		if (!_this.$img.length) {
-
 			// TODO: Implement load
 			setTimeout( () => {
 				new CoverImage( _this.$el );
@@ -133,7 +131,6 @@ class CoverImage {
 
 		_this.imageDimensions = dimensions;
 
-
 		if ( isNaN( dimensions.width ) ) {
 			console.log('Failed to calculate image sizes.');
 		}
@@ -151,7 +148,7 @@ class CoverImage {
 			'position'	: 'absolute',
 			'width'		: _this.imageDimensions.width,
 			'height'	: _this.imageDimensions.height,
-			'transform'		: _this.getTransform(
+			'transform'	: _this.getTransform(
 				( _this.$el.width() - _this.imageDimensions.width) * _this.positioning.y,
 				( _this.$el.outerHeight() - _this.imageDimensions.height) * _this.positioning.x
 			),
