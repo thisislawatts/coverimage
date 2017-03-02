@@ -1,5 +1,4 @@
 class CoverImage {
-
 	constructor($el, cb) {
 		const _this = this;
 
@@ -67,11 +66,11 @@ class CoverImage {
 			_this.resizeImage();
 		});
 
-		$(window).on('resize', () => {
+		jQuery(window).on('resize', () => {
 			_this.resizeImage();
 		});
 
-		$(window).on('ci.resize', () => {
+		jQuery(window).on('ci.resize', () => {
 			_this.resizeImage();
 		});
 
