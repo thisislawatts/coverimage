@@ -23,14 +23,14 @@ class CoverImage {
 			return;
 		}
 
-		_this.imageWidth = _this.$img.attr('width');
-		_this.imageHeight = _this.$img.attr('height');
+		_this.imageWidth = parseInt(_this.$img.attr('width'), 10);
+		_this.imageHeight = parseInt(_this.$img.attr('height'), 10);
 
 		// If the image doesn't have harcoded width|height
 		// attributes then load the image to calculate
 		// the dimensions
 		if (!_this.imageWidth || !_this.imageHeight) {
-			console.log('No dimensions found. Generating image')
+			console.log('No dimensions found. Generating image:', _this.$img.attr('src'))
 			_this.img = new Image();
 			_this.img.src = _this.$img.attr('src');
 
