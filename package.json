@@ -2,7 +2,7 @@
   "name": "coverimage",
   "version": "0.0.2",
   "description": "Will take an element and find an image within then size to essentially replicate CSS behaviour of background-size: cover",
-  "main": "src/coverimage.js",
+  "main": "dist/coverimage.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel ./src -d ./dist"
@@ -19,7 +19,8 @@
   "homepage": "https://github.com/thisislawatts/coverimage",
   "devDependencies": {
     "babel-cli": "^6.22.2",
-    "babel-preset-env": "^1.1.8"
+    "babel-preset-env": "^1.1.8",
+    "mocha": "^3.2.0"
   },
   "dependencies": {
     "jquery": "^3.1.1"
