@@ -1,10 +1,10 @@
 class CoverImage {
-	constructor($el, cb) {
+	constructor(el, cb) {
 		const _this = this;
 
-		_this.$el = $el ? jQuery($el) : jQuery(window);
+		_this.$el = el ? el : window;
 		_this.$img = _this.getElementForSizing();
-		_this.disableOnMobile = _this.$el.data('cover-image-mobile') === false;
+		_this.disableOnMobile = _this.$el.dataset['cover-image-mobile'] === 'false';
 		_this.cb = cb || (() => {
 			//DEBUG console.log("Default callback");
 		});
@@ -14,7 +14,7 @@ class CoverImage {
 			y : 0.5
 		};
 		_this.options = {
-			parallax : _this.$el.data('coverImageParallax') === ''
+			parallax : _this.$el.dataset.coverImageParallax === 'true'
 		};
 
 		if (!_this.$img) {
@@ -22,8 +22,8 @@ class CoverImage {
 			return;
 		}
 
-		_this.imageWidth = parseInt(_this.$img.attr('width'), 10);
-		_this.imageHeight = parseInt(_this.$img.attr('height'), 10);
+		_this.imageWidth = _this.$img.width;
+		_this.imageHeight = _this.$img.height;
 
 		// If the image doesn't have harcoded width|height
 		// attributes then load the image to calculate
@@ -42,16 +42,16 @@ class CoverImage {
 		}
 
 		_this.elementDimensions = {
-			height : _this.$el.outerHeight(),
-			width  : _this.$el.outerWidth()
+			height : _this.$el.clientHeight,
+			width  : _this.$el.clientWidth
 		};
 
-		_this.$el.css({
-			overflow : 'hidden',
-			position : 'relative'
-		});
+		_this.$el.style = `
+			overflow : hidden;
+			position : relative;
+		`;
 
-		if (!_this.$img.length) {
+		if (!_this.$img) {
 			// TODO: Implement load
 			setTimeout( () => {
 				new CoverImage( _this.$el );
@@ -61,18 +61,18 @@ class CoverImage {
 			_this.resizeImage();
 		}
 
-		_this.$img.one('load', () => {
+		_this.$img.addEventListener('load', () => {
 			console.log('Image loaded:', 'resize');
 			_this.resizeImage();
-		});
+		}, false);
 
-		jQuery(window).on('resize', () => {
+		window.addEventListener('resize', () => {
 			_this.resizeImage();
-		});
+		}, true);
 
-		jQuery(window).on('ci.resize', () => {
+		window.addEventListener('ci.resize', () => {
 			_this.resizeImage();
-		});
+		}, true);
 
 		if (_this.options.parallax) {
 			_this.draw();
@@ -110,9 +110,13 @@ class CoverImage {
 		});
 	}
 
+	/**
+	 *
+	 * @return DOM Element
+	 */
 	getElementForSizing() {
-		const _this = this;
-		const selector = _this.$el.data('coverImageEl');
+		let _this = this;
+		let selector = _this.$el.dataset['coverImageEl'];
 
 		if ( selector )  {
 
@@ -121,12 +125,14 @@ class CoverImage {
 			return _this.$el.find( selector ) ? _this.$el.find( selector ) : _this.$el.find('img');
 		}
 
-		return _this.$el.find('img').first();
+		return _this.$el.querySelector('img');
 	}
 
 	resizeImage() {
 		const _this = this;
-		const dimensions = _this.coverDimensions( _this.imageWidth, _this.imageHeight, _this.$el.outerWidth(), _this.$el.outerHeight() );
+		const elementWidth = _this.$el.clientWidth;
+		const elementHeight = _this.$el.clientHeight;
+		const dimensions = _this.coverDimensions( _this.imageWidth, _this.imageHeight, elementWidth, elementHeight );
 
 		_this.imageDimensions = dimensions;
 
@@ -140,22 +146,23 @@ class CoverImage {
 	setImageSize() {
 		const _this = this;
 
-		_this.$img.attr({
-			'width'		: _this.imageDimensions.width,
-			'height'	: _this.imageDimensions.height
-		}).css({
-			'position'	: 'absolute',
-			'width'		: _this.imageDimensions.width,
-			'height'	: _this.imageDimensions.height,
-			'transform'	: _this.getTransform(
-				( _this.$el.width() - _this.imageDimensions.width) * _this.positioning.y,
-				( _this.$el.outerHeight() - _this.imageDimensions.height) * _this.positioning.x
-			),
-			'max-width'	: 'none'
-		}).data('resrc-width', _this.imageDimensions.width);
+		_this.$img.width = _this.imageDimensions.width;
+		_this.$img.height = _this.imageDimensions.height;
 
-		_this.$img.addClass('ci--sized');
+		let transform = _this.getTransform(
+				( _this.$el.clientWidth - _this.imageDimensions.width) * _this.positioning.y,
+				( _this.$el.clientHeight - _this.imageDimensions.height) * _this.positioning.x
+			);
 
+		_this.$img.style = `
+			position: absolute;
+			width: ${_this.imageDimensions.width};
+			height: ${_this.imageDimensions.height};
+			transform: ${transform};
+			max-width: none;
+		`;
+
+		_this.$img.classList.add('ci--sized');
 		_this.cb();
 	}
 
@@ -193,5 +200,5 @@ class CoverImage {
 const elems = document.body.querySelectorAll('[data-cover-image]');
 
 elems.forEach(el => {
-	new CoverImage( jQuery(el) );
+	new CoverImage( el );
 });
