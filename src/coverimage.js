@@ -1,3 +1,5 @@
+const elementResizeDetectorMaker = require('element-resize-detector');
+
 class CoverImage {
 	constructor(el, cb) {
 		const _this = this;
@@ -62,9 +64,24 @@ class CoverImage {
 		}
 
 		_this.$img.addEventListener('load', () => {
-			console.log('Image loaded:', 'resize');
 			_this.resizeImage();
 		}, false);
+
+		_this.$el.addEventListener('transitionend', () => {
+			_this.resizeImage();
+		}, false)
+
+		var erd = elementResizeDetectorMaker({
+			strategy: 'scroll'
+		});
+
+		erd.listenTo(_this.$el, () => {
+			_this.resizeImage();
+		})
+
+		_this.$el.addEventListener('animationend', () => {
+			_this.resizeImage();
+		}, false)
 
 		window.addEventListener('resize', () => {
 			_this.resizeImage();
