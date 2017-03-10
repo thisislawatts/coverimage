@@ -28,6 +28,18 @@
 			height: 18em;
 			outline: 1px solid red;
 		}
+
+		#Example3 {
+			height: 33vw;
+			outline: 1px solid rebeccapurple;
+			animation: 1s ease sizeIt;
+			animation-fill-mode: both;
+		}
+
+		@keyframes sizeIt {
+			from {height: 33vw}
+			to   {height: 50vw}
+		}
 	</style>
 </head>
 <body>
@@ -35,13 +47,18 @@
 	<h1>CoverImage</h1>
 	<h2>Take an element and cover it's background with an image.</h2>
 
-    <div id="Example1" class="eg" data-cover-image>
+  <div id="Example1" class="eg" data-cover-image>
 		<img src="./demo/images/600x400.png" alt="" width="600" height="400"/>
 	</div>
 
 	<div id="Example2" class="eg" data-cover-image>
 		<img src="./demo/images/800x400.png" alt="" width="800" height="400"/>
 	</div>
+
+	<div id="Example3" class="eg" data-cover-image>
+		<img src="./demo/images/800x400.png" alt="" width="800" height="400"/>
+	</div>
+
 
 	<h3>Advantages</h3>
 	<ul>
@@ -53,6 +70,6 @@
 		Fork on <a href="https://github.com/thisislawatts/coverimage">GitHub</a>
 	</footer>
 
-	<script src="dist/coverimage.js"></script>
+	<script src="dist/coverimage.pkgd.js"></script>
 </body>
 </html>
