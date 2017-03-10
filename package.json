@@ -1,6 +1,6 @@
 {
   "name": "coverimage",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Will take an element and find an image within then size to essentially replicate CSS behaviour of background-size: cover",
   "main": "dist/coverimage.js",
   "scripts": {
