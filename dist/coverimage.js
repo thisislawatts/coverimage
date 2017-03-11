@@ -30,16 +30,16 @@ var CoverImage = function () {
 			return;
 		}
 
-		_this.imageWidth = _this.$img.width;
-		_this.imageHeight = _this.$img.height;
+		_this.imageWidth = _this.$img.getAttribute('width');
+		_this.imageHeight = _this.$img.getAttribute('height');
 
 		// If the image doesn't have harcoded width|height
 		// attributes then load the image to calculate
 		// the dimensions
 		if (!_this.imageWidth || !_this.imageHeight) {
-			console.log('No dimensions found. Generating image:', _this.$img.attr('src'));
+			console.log('No dimensions found. Generating image:', _this.$img.src);
 			_this.img = new Image();
-			_this.img.src = _this.$img.attr('src');
+			_this.img.src = _this.$img.src;
 
 			_this.imageWidth = _this.img.width;
 			_this.imageHeight = _this.img.height;
@@ -228,4 +228,3 @@ var elems = document.body.querySelectorAll('[data-cover-image]');
 elems.forEach(function (el) {
 	new CoverImage(el);
 });
-//# sourceMappingURL=coverimage.js.map
